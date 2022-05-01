@@ -33,7 +33,7 @@ class ExchangeRateController extends Controller
         $amount = $request->amount ?? 100876;
         $exchanged_amount = $exchange_rate["currencies"][$from][$to] * $amount;
         $formatted_result = number_format(
-            $exchanged_amount,
+            round($exchanged_amount, 2),
             2,
             '.',
             ','
