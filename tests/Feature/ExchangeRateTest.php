@@ -58,6 +58,12 @@ class ExchangeRate extends TestCase
             "message" => "The amount must be a number.",
             "data" => NULL
         ];
+        $currency_type_error_response = [
+            "status" => "error",
+            "code" => 400,
+            "message" => "No matching currency exchange rate",
+            "data" => NULL
+        ];
         return [
             '沒有提供必要的參數' => [
                 $no_neccessary_parameter_response,
@@ -75,6 +81,15 @@ class ExchangeRate extends TestCase
                     "amount" => "hi"
                 ]
             ],
+            '給予錯誤的貨幣別' => [
+                $currency_type_error_response,
+                400,
+                [
+                    "from" => "CNY",
+                    "to" => "JPY",
+                    "amount" => 133
+                ]
+            ]
         ];
     }
 }

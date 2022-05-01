@@ -3,35 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ExchangeRateRequest;
+use App\Service\ExchangeRateService;
 
 class ExchangeRateController extends Controller
 {
+    private $exchangeRateService;
+
+    public function __construct(
+        ExchangeRateService $exchangeRateService
+    ) {
+        $this->exchangeRateService = $exchangeRateService;
+    }
+
     public function index(ExchangeRateRequest $request)
     {
-        $exchange_rate =
-            [
-                "currencies" => [
-                    "TWD" => [
-                        "TWD" => 1,
-                        "JPY" => 3.669,
-                        "USD" => 0.03281
-                    ],
-                    "JPY" => [
-                        "TWD" => 0.26956,
-                        "JPY" => 1,
-                        "USD" => 0.00885
-                    ],
-                    "USD" => [
-                        "TWD" => 30.444,
-                        "JPY" => 111.801,
-                        "USD" => 1
-                    ]
-                ]
-            ];
         $from = $request->from;
         $to = $request->to;
         $amount = $request->amount;
-        $exchanged_amount = $exchange_rate["currencies"][$from][$to] * $amount;
+
+        if (!$this->exchangeRateService->checkExchangeRateType($from, $to)) {
+            $return_data = [
+                "status" => "error",
+                "code" => 400,
+                "message" => "No matching currency exchange rate",
+                "data" => NULL,
+            ];
+            return response()->json($return_data, 400);
+        };
+        $exchanged_amount = $this->exchangeRateService->getExchangedAmount($from, $to, $amount);
+
         $formatted_result = number_format(
             round($exchanged_amount, 2),
             2,
@@ -41,7 +41,7 @@ class ExchangeRateController extends Controller
         $return_data = [
             "status" => "success",
             "code" => 200,
-            "message" => "成功,正常回傳",
+            "message" => "success,normal response",
             "data" => $formatted_result,
         ];
         return response()->json($return_data);
