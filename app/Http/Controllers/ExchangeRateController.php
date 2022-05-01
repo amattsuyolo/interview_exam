@@ -28,9 +28,9 @@ class ExchangeRateController extends Controller
                     ]
                 ]
             ];
-        $from = $request->from ?? "TWD";
-        $to = $request->to ?? "JPY";
-        $amount = $request->amount ?? 100876;
+        $from = $request->from;
+        $to = $request->to;
+        $amount = $request->amount;
         $exchanged_amount = $exchange_rate["currencies"][$from][$to] * $amount;
         $formatted_result = number_format(
             round($exchanged_amount, 2),
