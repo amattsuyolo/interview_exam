@@ -42,4 +42,32 @@ class ExchangeRateTest extends TestCase
         $response = $exchangeRateService->checkExchangeRateType("TWD1", "USD1");
         $this->assertTrue($response);
     }
+    /**
+     * 
+     * ./vendor/bin/phpunit --group=exchangeRateService
+     * @group exchangeRateService
+     * @return void
+     */
+    public function test_getExchangedAmount()
+    {
+        $exchange_rate_data =  [
+            "TWD" => [
+                "TWD" => 1,
+                "JPY" => 15,
+                "USD1" => 0.03281
+            ]
+        ];
+        app()->instance(
+            ExchangeRateRepository::class,
+            Mockery::mock(ExchangeRateRepository::class, function (MockInterface $mock) use ($exchange_rate_data) {
+                $mock->shouldReceive('getExchangeRate')
+                    ->once()
+                    ->andReturn($exchange_rate_data);
+            })
+        );
+        $exchangeRateService = app()->make(ExchangeRateService::class);
+
+        $response = $exchangeRateService->getExchangedAmount("TWD", "JPY", 100);
+        $this->assertEquals(1500, $response);
+    }
 }
