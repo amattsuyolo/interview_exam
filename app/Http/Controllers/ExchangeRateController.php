@@ -32,12 +32,8 @@ class ExchangeRateController extends Controller
         };
         $exchanged_amount = $this->exchangeRateService->getExchangedAmount($from, $to, $amount);
 
-        $formatted_result = number_format(
-            round($exchanged_amount, 2),
-            2,
-            '.',
-            ','
-        );
+        $formatted_result = $this->formatNumber($exchanged_amount);
+
         $return_data = [
             "status" => "success",
             "code" => 200,
@@ -45,5 +41,18 @@ class ExchangeRateController extends Controller
             "data" => $formatted_result,
         ];
         return response()->json($return_data);
+    }
+    /**
+     * 格式處理如下
+     * 2549984.125 -> 2,549,984.13
+     */
+    public function formatNumber($input)
+    {
+        return number_format(
+            round($input, 2),
+            2,
+            '.',
+            ','
+        );
     }
 }
