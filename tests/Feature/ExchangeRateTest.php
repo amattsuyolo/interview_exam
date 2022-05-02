@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Http\Response;
 
-class ExchangeRate extends TestCase
+class ExchangeRateTest extends TestCase
 {
     /**
      * ./vendor/bin/phpunit --group=exchangeRate
